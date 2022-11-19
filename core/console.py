@@ -2,7 +2,7 @@
 
 import sys
 import datetime
-from multiprocessing import Process
+from threading import Thread
 from multiprocessing import Queue
 import rlcompleter  # this does python autocomplete by tab
 
@@ -17,7 +17,7 @@ from core.config import cfg
 class Console:
     alive = True
     user_input_queue = Queue()
-    user_input_process = None
+    user_input_thread = None
 
     @classmethod
     def user_input_loop(cls):
@@ -33,8 +33,6 @@ class Console:
     def terminate(cls):
         """ Set cls.alive flag to False, that should trigger the program termination from __main__ """
         cls.alive = False
-        cls.user_input_process.terminate()
-        cls.user_input_process.join()
 
     @classmethod
     def init(cls):
@@ -44,9 +42,9 @@ class Console:
         """
 
         # Init user console
-        cls.user_input_process = Process(target=cls.user_input_loop, name="user_input")
-        cls.user_input_process.daemon = True
-        cls.user_input_process.start()
+        cls.user_input_thread = Thread(target=cls.user_input_loop, name="user_input")
+        cls.user_input_thread.daemon = True
+        cls.user_input_thread.start()
 
 
 class Log:

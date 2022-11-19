@@ -2,7 +2,7 @@
 from tortoise.models import Model
 from tortoise import fields
 
-from core import Db
+from core import Db, Log, dc
 from core import cfg_factory as cf
 
 
