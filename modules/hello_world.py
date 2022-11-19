@@ -3,6 +3,7 @@ from tortoise.models import Model
 from tortoise import fields
 
 from core import Db
+from core import cfg_factory as cf
 
 
 @Db.model
@@ -18,3 +19,23 @@ class MyModel(Model):
     def __str__(self):
         return f"<MyModel id={self.id}>"
 
+
+myCoolConfig = cf.CfgFactory(
+    name='CoolConfig',
+    variables=[
+        cf.StrVar(name='cool_str'),
+        cf.TextVar(name='cool_text'),
+        cf.EmojiVar(name='cool_emoji'),
+        cf.OptionVar(name='cool_option', options=['one', 'two']),
+        cf.BoolVar(name='cool_bool'),
+        cf.IntVar(name='CoolInt'),
+        cf.SliderVar(name='CoolSlider'),
+        cf.RoleVar(name='CoolRole'),
+        cf.TextChanVar(name='CoolTextChannel'),
+        cf.DurationVar(name='CoolDuration'),
+        cf.VariableTable(name='CoolTable', variables=[
+            cf.StrVar(name='cool_column1'),
+            cf.IntVar(name='cool_column2')
+        ])
+    ]
+)
