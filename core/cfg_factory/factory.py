@@ -1,5 +1,9 @@
 """ Factory for defining user configs """
 from __future__ import annotations
+
+import json
+from typing import Any
+from types import SimpleNamespace
 from tortoise import Model, fields
 from nextcord import Guild
 
@@ -9,7 +13,7 @@ from core import Db, Log
 class ConfigTable(Model):
     """ Base config table class for tortoise, this is here for annotations """
 
-    cfg_id = fields.IntField(pk=True)
+    cfg_id = fields.BigIntField(pk=True)
     cfg_name = fields.CharField(max_length=64)
     cfg_info = fields.JSONField(default={})
     cfg_data = fields.JSONField(default={})
@@ -48,13 +52,13 @@ class CfgFactory:
         return await Config.new(self, guild, self.table(cfg_id=cfg_id, cfg_name=self.name))
 
 
-class Config:
+class Config(SimpleNamespace):
 
     @classmethod
-    async def new(cls, factory: CfgFactory, guild: Guild, row: ConfigTable) -> Config:
+    async def new(cls, factory: CfgFactory, guild: Guild, row: ConfigTable) -> Any:
 
         config = cls(factory, row)
-        for var in config._factory.variables:
+        for var in config._factory.variables.values():
             try:
                 obj = await var.from_json(row.cfg_data.get(var.name, var.default), guild)
             except Exception as e:
@@ -75,13 +79,12 @@ class Config:
             if name not in self._factory.variables.keys():
                 raise KeyError(f"Variable '{name}' not found.")
             vo = self._factory.variables[name]
-            data[name] = await vo.validate(value, guild)  # this may raise ValueError
-            objects[name] = await vo.wrap(data[name], guild)
+            objects[name] = await vo.from_string(value, guild)  # this may raise ValueError
             vo.verify(objects[name])
 
         # Update self attributes
         on_change_triggers = set()
-        for key, value in data.items():
+        for key, value in objects.items():
             vo = self._factory.variables[key]
             setattr(self, key, objects[key])
             if vo.on_change:
@@ -98,6 +101,12 @@ class Config:
     def jsonify(self) -> dict:
         data = {name: var.jsonify(getattr(self, name)) for name, var in self._factory.variables.items()}
         return data
+
+    def readable(self) -> str:
+        return json.dumps(
+            {name: var.readable(getattr(self, name)) for name, var in self._factory.variables.items()},
+            ensure_ascii=False, indent=2
+        )
 
     async def delete(self):
         await self.row.delete()

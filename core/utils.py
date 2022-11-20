@@ -1,4 +1,5 @@
 import re
+import random
 from datetime import timedelta
 from nextcord.utils import get, find, escape_markdown
 
@@ -19,22 +20,28 @@ def parse_duration(string):
         duration = 0
         for part in re.findall(r"\d+\w", string):
             val = float(part[:-1])
-            if part[-1] == 's':
-                duration += val
-            elif part[-1] == 'm':
-                duration += val * 60
-            elif part[-1] == 'h':
-                duration += val * 60 * 60
-            elif part[-1] == 'd':
-                duration += val * 60 * 60 * 24
-            elif part[-1] == 'W':
-                duration += val * 60 * 60 * 24 * 7
-            elif part[-1] == 'M':
-                duration += val * 60 * 60 * 24 * 30
-            elif part[-1] == 'Y':
-                duration += val * 365 * 24 * 60
-            else:
-                raise ValueError()
+            match part[-1]:
+                case 's':
+                    duration += val
+                case 'm':
+                    duration += val * 60
+                case 'h':
+                    duration += val * 60 * 60
+                case 'd':
+                    duration += val * 60 * 60 * 24
+                case 'W':
+                    duration += val * 60 * 60 * 24 * 7
+                case 'M':
+                    duration += val * 60 * 60 * 24 * 30
+                case 'Y':
+                    duration += val * 365 * 24 * 60
+                case _:
+                    raise ValueError(f"Invalid time duration format {string}")
         return timedelta(seconds=int(duration))
     else:
         raise ValueError(f"Invalid time duration format {string}")
+
+
+def random_string(length):
+    letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    return ''.join(random.choice(letters) for i in range(length))

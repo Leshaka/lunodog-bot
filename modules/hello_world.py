@@ -39,3 +39,13 @@ myCoolConfig = cf.CfgFactory(
         ])
     ]
 )
+
+
+@dc.event
+async def on_ready():
+    my_guild = dc.get_guild(745999774649679923)
+    cfg = await myCoolConfig.spawn(guild=my_guild, cfg_id=my_guild.id)
+    Log.info(f'cool_str = {cfg.cool_str}')
+    Log.info(cfg.readable())
+    await cfg.update(guild=my_guild, data={'cool_str': 'ololo!'})
+    Log.info(f'cool_str = {cfg.cool_str}')

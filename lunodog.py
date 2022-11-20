@@ -6,6 +6,7 @@ import traceback
 
 import core
 import modules
+import api
 
 
 def ctrl_c():
@@ -65,10 +66,14 @@ async def main():
     core.Log.info("Waiting for connection to close...")
     await core.dc.close()
 
-    core.Log.info("Closing db.")
+    if core.cfg.API_ENABLE:
+        core.Log.info("Closing API server...")
+        await api.ApiServer.runner.cleanup()
+
+    core.Log.info("Closing db...")
     await core.Db.close()
 
-    core.Log.info("Closing log.")
+    core.Log.info("Closing log...")
     core.Log.close()
 
     print("Exit now.")
@@ -80,5 +85,7 @@ if __name__ == '__main__':
     for signal in [signal.SIGINT, signal.SIGTERM]:
         loop.add_signal_handler(signal, ctrl_c)
     loop.run_until_complete(init())
+    if core.cfg.API_ENABLE:
+        loop.run_until_complete(api.ApiServer.start())
     loop.create_task(core.dc.start(core.cfg.DC_BOT_TOKEN))
     loop.run_until_complete(main())
