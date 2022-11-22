@@ -41,7 +41,6 @@ class ApiRoute:
         # Prepare kwargs and run the function
         try:
             kwargs = await self.get_post_data(request) if self.method == 'POST' else dict(request.query)
-            print(kwargs)
 
             if self.auth:
                 kwargs['oauth_user'] = await self.get_oauth_user(request)

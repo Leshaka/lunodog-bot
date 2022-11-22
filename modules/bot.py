@@ -8,7 +8,8 @@ class Bot:
 
 @dc.event
 async def on_think(frame_time: float):
-    Log.debug(f'tick @ {frame_time}')
+#    Log.debug(f'tick @ {frame_time}')
+    pass
 
 
 @dc.event

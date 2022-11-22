@@ -13,6 +13,8 @@ class ApiServer:
     )
     runner = web.AppRunner(app)
 
+    app.router.add_routes([web.static('/res', 'resources')])
+
     context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
     context.load_cert_chain(
         certfile=cfg.API_SSL_CERT_FILE,
