@@ -14,9 +14,13 @@ export default {
 
 body {
   all: initial;
-  * {
+  *:not(path) {
     all: unset;
     box-sizing: border-box;
+  }
+
+  path {
+    box-sizing: content-box;
   }
 }
 
@@ -43,6 +47,11 @@ body {
 @font-face {
   font-family: roboto-bold;
   src: url("@/../public/fonts/Roboto/Roboto-Bold.ttf");
+}
+
+@font-face {
+  font-family: holtwood;
+  src: url("@/../public/fonts/Holtwood_One_SC/HoltwoodOneSC-Regular.ttf");
 }
 
 </style>
