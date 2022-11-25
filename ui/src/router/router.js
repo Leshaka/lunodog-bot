@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import MainPage from '@/pages/MainPage'
 import ErrorPage from '@/pages/ErrorPage'
-import LoginPage from '@/pages/LoginPage'
+import SettingsPage from '@/pages/SettingsPage'
 import Oauth2Page from '@/pages/Oauth2Page'
 
 
@@ -9,27 +9,25 @@ import Oauth2Page from '@/pages/Oauth2Page'
 const routes = [
   {
     name: 'mainPage',
-    path: '/:module?',
-    component: MainPage,
-    props: true
+    path: '/',
+    component: MainPage
   },
   {
     name: 'errorPage',
     path: '/error',
-    component: ErrorPage,
-    props: true
-  },
-  {
-    name: 'loginPage',
-    path: '/login',
-    component: LoginPage,
-    props: true
+    component: ErrorPage
   },
   {
     name: 'oauth2Page',
     path: '/oauth',
     component: Oauth2Page
-  }
+  },
+  {
+    name: 'settingsPage',
+    path: '/login',
+    component: SettingsPage
+  },
+
 ]
 
 const router = createRouter({
